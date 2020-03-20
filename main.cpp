@@ -1,186 +1,199 @@
-#include <stdlib.h>
-
+// STL
+#include <cstdlib>
+// GL3W
+#include <GL/gl3w.h>
 // imgui headers
 #include <imgui.h>
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl2.h"
-
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 // RCC++ headers
 #include "RuntimeObjectSystem.h"
-
-// headers from our example 
+// headers from our example
+#include "RCCppMainLoop.h"
 #include "StdioLogSystem.h"
 #include "SystemTable.h"
-#include "RCCppMainLoop.h"
-
+// GLFW3
 #include <GLFW/glfw3.h>
 
 // RCC++ Data
-static StdioLogSystem           g_Logger;
-static SystemTable              g_SystemTable;
+static StdioLogSystem g_Logger;
+static SystemTable g_SystemTable;
 
 bool RCCppInit();
 void RCCppCleanup();
 void RCCppUpdate();
 
 // Power save
-const int POWERSAVEDRAWNUM      = 3;
-int powerSaveCountDown          = POWERSAVEDRAWNUM;
-void ResetPowerSaveCountDown(){ powerSaveCountDown = 3; }
-void WindowResizeCallback( GLFWwindow* window, int width, int height ){ ResetPowerSaveCountDown(); }
-void WindowPosCallback( GLFWwindow* window, int xpos, int ypos ){ ResetPowerSaveCountDown(); }
-void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
-{
-    ResetPowerSaveCountDown();
-    ImGui_ImplGlfw_KeyCallback( window, key, scancode, action, mods );
-}
-void CharCallback( GLFWwindow* window, unsigned int character )
-{
-    ResetPowerSaveCountDown();
-    ImGui_ImplGlfw_CharCallback( window, character );
-}
-void MouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
-{
-    ResetPowerSaveCountDown();
-    ImGui_ImplGlfw_MouseButtonCallback( window, button, action, mods );
-}
-void MousePosCallback( GLFWwindow* window, double x, double y ){ ResetPowerSaveCountDown(); }
-void MouseWheelCallback( GLFWwindow* window, double x, double y )
-{
-    ResetPowerSaveCountDown();
-    ImGui_ImplGlfw_ScrollCallback( window, x, y );
+const int POWERSAVEDRAWNUM = 3;
+int powerSaveCountDown = POWERSAVEDRAWNUM;
+
+void ResetPowerSaveCountDown() { powerSaveCountDown = 3; }
+
+void WindowResizeCallback(GLFWwindow *pWindow, int width, int height) {
+  ResetPowerSaveCountDown();
 }
 
+void WindowPosCallback(GLFWwindow *pWindow, int xpos, int ypos) {
+  ResetPowerSaveCountDown();
+}
 
-int main( int argc, const char * argv[] )
-{
-    if (!glfwInit())
-        exit(1);
+void KeyCallback(GLFWwindow *pWindow, int key, int scancode, int action,
+                 int mods) {
+  ResetPowerSaveCountDown();
+  ImGui_ImplGlfw_KeyCallback(pWindow, key, scancode, action, mods);
+}
 
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "RCC++ Dear ImGui GLFW example", NULL, NULL);
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+void CharCallback(GLFWwindow *pWindow, unsigned int character) {
+  ResetPowerSaveCountDown();
+  ImGui_ImplGlfw_CharCallback(pWindow, character);
+}
 
-    // Power save - ensure callbacks point to the correct place
-    glfwSetWindowSizeCallback( window, WindowResizeCallback );
-    glfwSetWindowPosCallback( window, WindowPosCallback );
-    glfwSetKeyCallback( window, KeyCallback );
-    glfwSetCharCallback( window, CharCallback );
-    glfwSetMouseButtonCallback( window, MouseButtonCallback );
-    glfwSetCursorPosCallback( window, MousePosCallback );
-    glfwSetScrollCallback( window, MouseWheelCallback );
+void MouseButtonCallback(GLFWwindow *pWindow, int button, int action, int mods) {
+  ResetPowerSaveCountDown();
+  ImGui_ImplGlfw_MouseButtonCallback(pWindow, button, action, mods);
+}
 
-    // Setup Dear ImGui binding
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+void MousePosCallback(GLFWwindow *pWindow, double x, double y) {
+  ResetPowerSaveCountDown();
+}
 
-    ImGui_ImplGlfw_InitForOpenGL(window, false);
-    ImGui_ImplOpenGL2_Init();
+void MouseWheelCallback(GLFWwindow *pWindow, double x, double y) {
+  ResetPowerSaveCountDown();
+  ImGui_ImplGlfw_ScrollCallback(pWindow, x, y);
+}
 
-    // Initialize RCC++
-    RCCppInit();
+int main(int argc, const char *argv[]) {
+  if (!glfwInit()) {
+    return EXIT_FAILURE;
+  }
 
-    // Setup style
-    ImGui::StyleColorsDark();
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    ImVec4 clear_color = ImColor(114, 144, 154);
-    while (!glfwWindowShouldClose(window))
+  const auto pMonitor = glfwGetPrimaryMonitor();
+  const auto pMode    = glfwGetVideoMode(pMonitor);
+
+  constexpr auto GLFW_VSYNC = 1;
+
+  auto pWindow = glfwCreateWindow(pMode->width, pMode->height, "Company of heros ISA", nullptr, nullptr);
+  glfwMakeContextCurrent(pWindow);
+  glfwSwapInterval(GLFW_VSYNC); // Enable vsync
+
+  // Power save - ensure callbacks point to the correct place
+  glfwSetWindowSizeCallback(pWindow,  WindowResizeCallback);
+  glfwSetWindowPosCallback(pWindow,   WindowPosCallback);
+  glfwSetKeyCallback(pWindow,         KeyCallback);
+  glfwSetCharCallback(pWindow,        CharCallback);
+  glfwSetMouseButtonCallback(pWindow, MouseButtonCallback);
+  glfwSetCursorPosCallback(pWindow,   MousePosCallback);
+  glfwSetScrollCallback(pWindow,      MouseWheelCallback);
+
+  gl3wInit();
+
+  // Setup Dear ImGui binding
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+
+  ImGui_ImplGlfw_InitForOpenGL(pWindow, false);
+  ImGui_ImplOpenGL3_Init("#version 330 core");
+
+  // Initialize RCC++
+  RCCppInit();
+
+  // Setup style
+  ImGui::StyleColorsDark();
+
+  const ImVec4 clear_color = ImColor(
+      static_cast<int>(0.1F  * 255.F),
+      static_cast<int>(0.1F  * 255.F),
+      static_cast<int>(0.15F * 255.F));
+  while (!glfwWindowShouldClose(pWindow)) {
+    glfwPollEvents();
+
+    // Update RCC++
+    RCCppUpdate();
+
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Call the function in our RCC++ class
+    g_SystemTable.pRCCppMainLoopI->MainLoop();
+
+    // Rendering
     {
+      glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
+      glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+      glClear(GL_COLOR_BUFFER_BIT);
+      ImGui::Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+      glfwSwapBuffers(pWindow);
+    }
+
+    // Power save
+    if (g_pSys->power_save) {
+      if (powerSaveCountDown) {
+        --powerSaveCountDown;
         glfwPollEvents();
-
-        // Update RCC++
-        RCCppUpdate();
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL2_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // Call the function in our RCC++ class
-        g_SystemTable.pRCCppMainLoopI->MainLoop();
-
-        // Rendering
-        {
-            glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
-            glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-            glClear(GL_COLOR_BUFFER_BIT);
-            ImGui::Render();
-            ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-            glfwSwapBuffers(window);
-        }
-
-        // Power save
-        if( g_pSys->power_save )
-        {
-            if( powerSaveCountDown )
-            {
-                --powerSaveCountDown;
-                glfwPollEvents();
-            }
-            else
-            {
-                ResetPowerSaveCountDown();
-                glfwWaitEvents();
-            }
-        }
+      } else {
+        ResetPowerSaveCountDown();
+        glfwWaitEvents();
+      }
     }
+  }
 
-    // Cleanup
-    RCCppCleanup();
-    ImGui_ImplOpenGL2_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    glfwTerminate();
+  // Cleanup
+  RCCppCleanup();
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+  glfwTerminate();
 
-    return 0;
+  return EXIT_SUCCESS;
 }
 
-bool RCCppInit()
-{
-    g_SystemTable.pImContext = ImGui::GetCurrentContext();
+bool RCCppInit() {
+  g_SystemTable.pImContext = ImGui::GetCurrentContext();
 
-    g_SystemTable.pRuntimeObjectSystem = new RuntimeObjectSystem;
-    if( !g_SystemTable.pRuntimeObjectSystem->Initialise(&g_Logger, &g_SystemTable) )
-    {
-        delete g_SystemTable.pRuntimeObjectSystem;
-        g_SystemTable.pRuntimeObjectSystem = 0;
-        return false;
-    }
+  g_SystemTable.pRuntimeObjectSystem = new RuntimeObjectSystem;
+  if (!g_SystemTable.pRuntimeObjectSystem->Initialise(&g_Logger,
+                                                      &g_SystemTable)) {
+    delete g_SystemTable.pRuntimeObjectSystem;
+    g_SystemTable.pRuntimeObjectSystem = 0;
+    return false;
+  }
 
-    g_SystemTable.pRuntimeObjectSystem->CleanObjectFiles();
+  g_SystemTable.pRuntimeObjectSystem->CleanObjectFiles();
 #ifndef _WIN32
-    g_SystemTable.pRuntimeObjectSystem->SetAdditionalCompileOptions( "-std=c++11" );
+  g_SystemTable.pRuntimeObjectSystem->SetAdditionalCompileOptions("-std=c++11");
 #endif
 
-    // ensure include directories are set - use location of this file as starting point
-    FileSystemUtils::Path basePath = g_SystemTable.pRuntimeObjectSystem->FindFile( __FILE__ ).ParentPath();
-    FileSystemUtils::Path imguiIncludeDir = basePath / "imgui";
-    g_SystemTable.pRuntimeObjectSystem->AddIncludeDir( imguiIncludeDir.c_str() );
+  // ensure include directories are set - use location of this file as starting
+  // point
+  auto basePath = g_SystemTable.pRuntimeObjectSystem->FindFile(__FILE__).ParentPath();
+  auto imguiIncludeDir = basePath / "imgui";
+  g_SystemTable.pRuntimeObjectSystem->AddIncludeDir(imguiIncludeDir.c_str());
 
-    return true;
+  return true;
 }
 
-void RCCppCleanup()
-{
-    delete g_SystemTable.pRuntimeObjectSystem;
-}
+void RCCppCleanup() { delete g_SystemTable.pRuntimeObjectSystem; }
 
-void RCCppUpdate()
-{
-    //check status of any compile
-    if( g_SystemTable.pRuntimeObjectSystem->GetIsCompiledComplete() )
-    {
-        // load module when compile complete
-        g_SystemTable.pRuntimeObjectSystem->LoadCompiledModule();
-    }
+void RCCppUpdate() {
+  // check status of any compile
+  if (g_SystemTable.pRuntimeObjectSystem->GetIsCompiledComplete()) {
+    // load module when compile complete
+    g_SystemTable.pRuntimeObjectSystem->LoadCompiledModule();
+  }
 
-    if( !g_SystemTable.pRuntimeObjectSystem->GetIsCompiling() )
-    {
-        float deltaTime = 1.0f / ImGui::GetIO().Framerate;
-        g_SystemTable.pRuntimeObjectSystem->GetFileChangeNotifier()->Update( deltaTime );
-    }
-    else
-    {
-        ResetPowerSaveCountDown();
-    }
+  if (!g_SystemTable.pRuntimeObjectSystem->GetIsCompiling()) {
+    float deltaTime = 1.0F / ImGui::GetIO().Framerate;
+    g_SystemTable.pRuntimeObjectSystem->GetFileChangeNotifier()->Update(
+        deltaTime);
+  } else {
+    ResetPowerSaveCountDown();
+  }
 }
