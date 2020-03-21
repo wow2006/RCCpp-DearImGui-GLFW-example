@@ -75,9 +75,10 @@ int main(int argc, const char *argv[]) {
   const auto pMonitor = glfwGetPrimaryMonitor();
   const auto pMode    = glfwGetVideoMode(pMonitor);
 
+  constexpr auto START_MENU_HEIGHT = 30 /*pixels*/;
   constexpr auto GLFW_VSYNC = 1;
 
-  auto pWindow = glfwCreateWindow(pMode->width, pMode->height, "Company of heros ISA", nullptr, nullptr);
+  auto pWindow = glfwCreateWindow(pMode->width, pMode->height-START_MENU_HEIGHT, "Company of heros ISA", nullptr, nullptr);
   glfwMakeContextCurrent(pWindow);
   glfwSwapInterval(GLFW_VSYNC); // Enable vsync
 
@@ -173,9 +174,12 @@ bool RCCppInit() {
 
   // ensure include directories are set - use location of this file as starting
   // point
-  auto basePath = g_SystemTable.pRuntimeObjectSystem->FindFile(__FILE__).ParentPath();
-  auto imguiIncludeDir = basePath / "imgui";
+  const auto basePath = g_SystemTable.pRuntimeObjectSystem->FindFile(__FILE__).ParentPath();
+  const auto imguiIncludeDir = basePath / ".." / "thirdparty" / "imgui";
   g_SystemTable.pRuntimeObjectSystem->AddIncludeDir(imguiIncludeDir.c_str());
+  // current
+  const auto includeDir = basePath / ".." / "include";
+  g_SystemTable.pRuntimeObjectSystem->AddIncludeDir(includeDir.c_str());
 
   return true;
 }

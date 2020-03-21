@@ -1,9 +1,9 @@
 [submodule "glfw"]
-	path = glfw
+	path = thirdparty/glfw
 	url = https://github.com/glfw/glfw
 [submodule "imgui"]
-	path = imgui
+	path = thirdparty/imgui
 	url = https://github.com/ocornut/imgui
 [submodule "RuntimeCompiledCPlusPlus"]
-	path = RuntimeCompiledCPlusPlus
+	path = thirdparty/RuntimeCompiledCPlusPlus
 	url = https://github.com/RuntimeCompiledCPlusPlus/RuntimeCompiledCPlusPlus

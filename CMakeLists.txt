@@ -7,12 +7,7 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL MODULE REQUIRED)
 find_package(GLFW   MODULE REQUIRED)
 find_package(ImGui  MODULE REQUIRED)
-
-add_subdirectory(RuntimeCompiledCPlusPlus/Aurora)
-
-if( WIN32 )
-    SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" )
-endif()
+add_subdirectory(thirdparty/RuntimeCompiledCPlusPlus/Aurora)
 
 add_executable(
   CompanyOfHeros
@@ -21,13 +16,13 @@ add_executable(
 target_sources(
   CompanyOfHeros
   PRIVATE
-  main.cpp
+  src/main.cpp
   #
-  StdioLogSystem.h
-  StdioLogSystem.cpp
-  RCCppMainLoop.h
-  RCCppMainLoop.cpp
-  SystemTable.h
+  include/StdioLogSystem.h
+  src/StdioLogSystem.cpp
+  include/RCCppMainLoop.h
+  src/RCCppMainLoop.cpp
+  include/SystemTable.h
 )
 
 target_link_libraries(
@@ -42,8 +37,9 @@ target_link_libraries(
 target_include_directories(
   CompanyOfHeros
   PRIVATE
-  ${CMAKE_SOURCE_DIR}/RuntimeCompiledCPlusPlus/Aurora/RuntimeObjectSystem
-  ${CMAKE_SOURCE_DIR}/RuntimeCompiledCPlusPlus/Aurora/RuntimeCompiler
+  ${CMAKE_SOURCE_DIR}/include/
+  ${CMAKE_SOURCE_DIR}/thirdparty/RuntimeCompiledCPlusPlus/Aurora/RuntimeObjectSystem
+  ${CMAKE_SOURCE_DIR}/thirdparty/RuntimeCompiledCPlusPlus/Aurora/RuntimeCompiler
 )
 
 set_target_properties(

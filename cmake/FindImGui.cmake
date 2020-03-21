@@ -1,4 +1,5 @@
 # ${CMAKE_SOURCE_DIR}/cmake/FindImGui.cmak
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/thirdparty/imgui)
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "GLFW lib only")
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "GLFW lib only")
@@ -22,19 +23,19 @@ add_library(
 target_sources(
   imgui
   PRIVATE
-  ${CMAKE_SOURCE_DIR}/imgui/imgui.cpp
-  ${CMAKE_SOURCE_DIR}/imgui/imgui_demo.cpp
-  ${CMAKE_SOURCE_DIR}/imgui/imgui_draw.cpp
-  ${CMAKE_SOURCE_DIR}/imgui/imgui_widgets.cpp
-  ${CMAKE_SOURCE_DIR}/imgui/examples/imgui_impl_glfw.cpp
-  ${CMAKE_SOURCE_DIR}/imgui/examples/imgui_impl_opengl3.cpp
+  ${IMGUI_DIR}/imgui.cpp
+  ${IMGUI_DIR}/imgui_demo.cpp
+  ${IMGUI_DIR}/imgui_draw.cpp
+  ${IMGUI_DIR}/imgui_widgets.cpp
+  ${IMGUI_DIR}/examples/imgui_impl_glfw.cpp
+  ${IMGUI_DIR}/examples/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(
   imgui
   SYSTEM PUBLIC
-  ${CMAKE_SOURCE_DIR}/imgui/
-  ${CMAKE_SOURCE_DIR}/imgui/examples/
+  ${IMGUI_DIR}/
+  ${IMGUI_DIR}/examples/
 )
 
 target_link_libraries(

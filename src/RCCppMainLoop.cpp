@@ -15,10 +15,11 @@
 // add imgui source dependencies
 // an alternative is to put imgui into a library and use RuntimeLinkLibrary
 #include "RuntimeSourceDependency.h"
-RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("imgui/imgui",         ".cpp");
-RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("imgui/imgui_widgets", ".cpp");
-RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("imgui/imgui_draw",    ".cpp");
-RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("imgui/imgui_demo",    ".cpp");
+// TODO(Hussin): remove imgui
+RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("../thirdparty/imgui/imgui",         ".cpp");
+RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("../thirdparty/imgui/imgui_widgets", ".cpp");
+RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("../thirdparty/imgui/imgui_draw",    ".cpp");
+RUNTIME_COMPILER_SOURCEDEPENDENCY_FILE("../thirdparty/imgui/imgui_demo",    ".cpp");
 // clang-format on
 
 // RCC++ uses interface Id's to distinguish between different classes
