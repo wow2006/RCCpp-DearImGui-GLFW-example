@@ -1,6 +1,6 @@
 # ${CMAKE_SOURCE_DIR}/CMakeLists.txt
 cmake_minimum_required(VERSION 3.9)
-project(CompanyOfHeros CXX)
+project(demo CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(OpenGL_GL_PREFERENCE "GLVND")
@@ -10,11 +10,11 @@ find_package(ImGui  MODULE REQUIRED)
 add_subdirectory(thirdparty/RuntimeCompiledCPlusPlus/Aurora)
 
 add_executable(
-  CompanyOfHeros
+  demo
 )
 
 target_sources(
-  CompanyOfHeros
+  demo
   PRIVATE
   src/main.cpp
   #
@@ -26,7 +26,7 @@ target_sources(
 )
 
 target_link_libraries(
-  CompanyOfHeros
+  demo
   PRIVATE
   glfw::glfw
   imgui::glfw
@@ -35,7 +35,7 @@ target_link_libraries(
 )
 
 target_include_directories(
-  CompanyOfHeros
+  demo
   PRIVATE
   ${CMAKE_SOURCE_DIR}/include/
   ${CMAKE_SOURCE_DIR}/thirdparty/RuntimeCompiledCPlusPlus/Aurora/RuntimeObjectSystem
@@ -43,7 +43,7 @@ target_include_directories(
 )
 
 set_target_properties(
-  CompanyOfHeros
+  demo
   PROPERTIES
   CXX_EXTENSIONS        OFF
   CXX_STANDARD          17
@@ -51,13 +51,13 @@ set_target_properties(
 )
 
 target_link_options(
-  CompanyOfHeros
+  demo
   PUBLIC
   $<$<PLATFORM_ID:Windows>:"/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup">
 )
 
 target_compile_options(
-  CompanyOfHeros
+  demo
   PUBLIC
   $<$<COMPILE_LANG_AND_ID:CXX,AppleClang>:-stdlib=libc++>
 )

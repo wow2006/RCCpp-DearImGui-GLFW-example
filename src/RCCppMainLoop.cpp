@@ -62,12 +62,6 @@ struct RCCppMainLoop : RCCppMainLoopI, TInterface<IID_IRCCPP_MAIN_LOOP, IObject>
   void MainLoop() override {
     ImGui::SetCurrentContext(PerModuleInterface::g_pSystemTable->pImContext);
 
-    ImGui::SetNextWindowPos(ImVec2(50, 400), ImGuiCond_Appearing);
-    ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always);
-    ImGui::Begin("RCCppMainLoop Window");
-    ImGui::Text("You can change Window's code at runtime!");
-    ImGui::End();
-
     // Show compiling info
     double time = ImGui::GetTime();
     bool bCompiling = g_pSys->pRuntimeObjectSystem->GetIsCompiling();
